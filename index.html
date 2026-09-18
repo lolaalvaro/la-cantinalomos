@@ -151,10 +151,35 @@
         <a href="#locales"   class="hover:opacity-60 transition">LOCALES</a>
         <a href="#contacto"  class="hover:opacity-60 transition">CONTACTO</a>
       </nav>
-      <a href="#locales" class="bg-ink text-paper text-[11px] sm:text-xs font-semibold tracking-[0.14em] px-4 sm:px-5 py-2.5 rounded-full hover:bg-ember transition">
-        PEDÍ AHORA
-      </a>
+
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a href="#locales" class="bg-ink text-paper text-[11px] sm:text-xs font-semibold tracking-[0.14em] px-4 sm:px-5 py-2.5 rounded-full hover:bg-ember transition">
+          PEDÍ AHORA
+        </a>
+
+        <!-- Botón hamburguesa: solo mobile/tablet -->
+        <button id="menuBtn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileMenu"
+                class="md:hidden relative w-11 h-11 grid place-items-center rounded-full hover:bg-ink/5 transition shrink-0">
+          <span class="sr-only">Menú</span>
+          <span class="relative block w-5 h-4" aria-hidden="true">
+            <span id="barTop"    class="absolute left-0 top-0 w-5 h-[2px] bg-ink transition-transform duration-300"></span>
+            <span id="barMid"    class="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-[2px] bg-ink transition-opacity duration-300"></span>
+            <span id="barBottom" class="absolute left-0 bottom-0 w-5 h-[2px] bg-ink transition-transform duration-300"></span>
+          </span>
+        </button>
+      </div>
     </div>
+
+    <!-- Menú mobile desplegable -->
+    <nav id="mobileMenu"
+         class="md:hidden overflow-hidden max-h-0 transition-[max-height] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] border-t border-ink/5 bg-paper/95">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 py-2 flex flex-col text-sm font-semibold tracking-[0.1em]">
+        <a href="carta.html" class="py-3 border-b border-ink/5 hover:opacity-60 transition">NUESTRA CARTA</a>
+        <a href="puntos.html" class="py-3 border-b border-ink/5 hover:opacity-60 transition">CANTINA PUNTOS</a>
+        <a href="#locales" class="mobile-nav-link py-3 border-b border-ink/5 hover:opacity-60 transition">LOCALES</a>
+        <a href="#contacto" class="mobile-nav-link py-3 hover:opacity-60 transition">CONTACTO</a>
+      </div>
+    </nav>
   </header>
 
   <!-- HERO -->
@@ -589,13 +614,55 @@
     <div class="border-t border-paper/10">
       <div class="max-w-7xl mx-auto px-6 sm:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[10px] tracking-[0.18em] text-paper/40">
         <span>© 2026 LA CANTINA · MENDOZA · ARG</span>
-        <a href="politica-de-privacidad.html" class="hover:text-paper transition">POLÍTICA DE PRIVACIDAD</a>
         <span>EL AUTÉNTICO LOMO A LAS BRASAS</span>
       </div>
     </div>
   </footer>
 
   <script>
+    /* Menú mobile */
+    (function () {
+      const btn = document.getElementById('menuBtn');
+      const menu = document.getElementById('mobileMenu');
+      if (!btn || !menu) return;
+
+      const barTop = document.getElementById('barTop');
+      const barMid = document.getElementById('barMid');
+      const barBottom = document.getElementById('barBottom');
+
+      let isOpen = false;
+
+      function openMenu() {
+        isOpen = true;
+        menu.style.maxHeight = menu.scrollHeight + 'px';
+        btn.setAttribute('aria-expanded', 'true');
+        barTop.style.transform = 'translateY(6px) rotate(45deg)';
+        barBottom.style.transform = 'translateY(-6px) rotate(-45deg)';
+        barMid.style.opacity = '0';
+      }
+
+      function closeMenu() {
+        isOpen = false;
+        menu.style.maxHeight = '0px';
+        btn.setAttribute('aria-expanded', 'false');
+        barTop.style.transform = '';
+        barBottom.style.transform = '';
+        barMid.style.opacity = '1';
+      }
+
+      btn.addEventListener('click', () => { isOpen ? closeMenu() : openMenu(); });
+
+      // Cerrar al tocar cualquier link del menú
+      menu.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', closeMenu);
+      });
+
+      // Si el usuario agranda la ventana a desktop, aseguramos que el menú quede cerrado/reseteado
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768 && isOpen) closeMenu();
+      });
+    })();
+
     /* Scroll-reveal */
     (function () {
       const targets = document.querySelectorAll('.reveal');
